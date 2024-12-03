@@ -12,13 +12,13 @@ fun Application.module() {
     install(SSE)
 
     routing {
-        sse("/events") {
+        sse("/eventsLimitedEvents") {
             repeat(6) {
                 send(ServerSentEvent("this is SSE #$it"))
                 delay(1000)
             }
         }
-        sse("/events2") {
+        sse("/eventsUnlimitedEvents") {
             var i = 1
             while(true) {
                 val msg = "this is SSE #$i"

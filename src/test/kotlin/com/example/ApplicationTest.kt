@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
 
 class ApplicationTest {
     @Test
-    fun testEvents() {
+    fun testLimitedEvents() {
         testApplication {
             application {
                 module()
@@ -18,12 +18,31 @@ class ApplicationTest {
                 install(SSE)
             }
 
-            client.sse("/events2") {
+            client.sse("/eventsLimitedEvents") {
                 incoming.collectIndexed { i, event ->
                     assertEquals("this is SSE #$i", event.data)
                 }
             }
-            println("next step")
+        }
+    }
+    @Test
+    fun testUnlimitedEvents() {
+        testApplication {
+            application {
+                module()
+            }
+
+            val client = createClient {
+                install(SSE)
+            }
+
+            client.sse("/eventsUnlimitedEvents") {
+                println("This is never called")
+                incoming.collectIndexed { i, event ->
+                    assertEquals("this is SSE #$i", event.data)
+                }
+            }
+            println("The request never comes back. That's why this line is also never reached.")
         }
     }
 }
