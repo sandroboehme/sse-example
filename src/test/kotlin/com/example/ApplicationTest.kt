@@ -18,7 +18,7 @@ class ApplicationTest {
                 install(SSE)
             }
 
-            client.sse("/eventsLimitedEvents") {
+            client.sse("/limitedEvents") {
                 incoming.collectIndexed { i, event ->
                     assertEquals("this is SSE #$i", event.data)
                 }
@@ -36,7 +36,7 @@ class ApplicationTest {
                 install(SSE)
             }
 
-            client.sse("/eventsUnlimitedEvents") {
+            client.sse("/unlimitedEvents") {
                 println("This is never called")
                 incoming.collectIndexed { i, event ->
                     assertEquals("this is SSE #$i", event.data)
