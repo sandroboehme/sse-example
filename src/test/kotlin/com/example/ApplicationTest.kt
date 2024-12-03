@@ -1,21 +1,29 @@
 package com.example
 
-import io.ktor.client.request.*
-import io.ktor.http.*
+import io.ktor.client.plugins.sse.*
 import io.ktor.server.testing.*
+import kotlinx.coroutines.flow.collectIndexed
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ApplicationTest {
-
     @Test
-    fun testRoot() = testApplication {
-        application {
-            module()
-        }
-        client.get("/").apply {
-            assertEquals(HttpStatusCode.OK, status)
+    fun testEvents() {
+        testApplication {
+            application {
+                module()
+            }
+
+            val client = createClient {
+                install(SSE)
+            }
+
+            client.sse("/events2") {
+                incoming.collectIndexed { i, event ->
+                    assertEquals("this is SSE #$i", event.data)
+                }
+            }
+            println("next step")
         }
     }
-
 }
